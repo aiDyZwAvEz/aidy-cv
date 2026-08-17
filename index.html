@@ -1,81 +1,780 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Aidan J Connolly — Electrician</title>
-  <link rel="stylesheet" href="styles.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aidan Connolly — Electrician</title>
+<meta name="description" content="Aidan Connolly — Licensed Electrician, Enmore NSW. Commercial, industrial and switchboard manufacturing experience.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0e13;
+    --bg-elevated:#12181f;
+    --bg-card:#141b23;
+    --line:#212a33;
+    --line-soft:#1a222a;
+    --copper:#c9814c;
+    --copper-bright:#e8a468;
+    --signal:#e8c547;
+    --text:#eaf0f5;
+    --text-dim:#8d99a6;
+    --text-faint:#4d5a66;
+    --radius:2px;
+    --rail-x:56px;
+    --maxw:920px;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    *{animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important;}
+  }
+
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Inter', sans-serif;
+    -webkit-font-smoothing:antialiased;
+    line-height:1.6;
+  }
+
+  ::selection{ background:var(--copper); color:#0a0e13; }
+
+  a{ color:inherit; }
+  a:focus-visible, button:focus-visible{
+    outline:2px solid var(--copper-bright);
+    outline-offset:3px;
+  }
+
+  h1,h2,h3{ font-family:'Space Grotesk', sans-serif; margin:0; }
+
+  .mono{ font-family:'IBM Plex Mono', monospace; }
+
+  /* ---------- background grid texture ---------- */
+  .grid-bg{
+    position:fixed; inset:0; z-index:0; pointer-events:none;
+    background-image:
+      linear-gradient(var(--line-soft) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line-soft) 1px, transparent 1px);
+    background-size:48px 48px;
+    opacity:0.35;
+    mask-image:radial-gradient(ellipse 80% 60% at 50% 0%, #000 40%, transparent 90%);
+  }
+
+  /* ---------- top nav ---------- */
+  .nav{
+    position:fixed; top:0; left:0; right:0; z-index:50;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:18px clamp(20px,5vw,64px);
+    background:rgba(10,14,19,0.75);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-mark{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:700; font-size:15px; letter-spacing:0.03em;
+    display:flex; align-items:center; gap:8px;
+    text-decoration:none;
+  }
+
+  .nav-links{ display:flex; gap:clamp(14px,2vw,28px); list-style:none; margin:0; padding:0; }
+  .nav-links a{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px; letter-spacing:0.08em; text-transform:uppercase;
+    text-decoration:none; color:var(--text-dim);
+    position:relative; padding-bottom:4px;
+    transition:color .2s ease;
+  }
+  .nav-links a::after{
+    content:''; position:absolute; left:0; bottom:0; height:1px; width:0;
+    background:var(--copper-bright); transition:width .25s ease;
+  }
+  .nav-links a:hover, .nav-links a.active{ color:var(--text); }
+  .nav-links a.active::after{ width:100%; background:var(--signal); }
+  .nav-links{ display:none; }
+  @media (min-width:720px){ .nav-links{ display:flex; } }
+
+  .nav-cta{
+    font-family:'IBM Plex Mono', monospace; font-size:11px; letter-spacing:0.06em;
+    text-transform:uppercase; text-decoration:none;
+    color:var(--bg); background:var(--copper-bright);
+    padding:9px 16px; border-radius:var(--radius);
+    transition:background .2s ease, transform .2s ease;
+  }
+  .nav-cta:hover{ background:var(--signal); transform:translateY(-1px); }
+
+  /* ---------- layout shell ---------- */
+  main{ position:relative; z-index:1; }
+  .shell{
+    max-width:var(--maxw); margin:0 auto;
+    padding:0 clamp(20px,6vw,64px);
+  }
+
+  /* ---------- hero / nameplate ---------- */
+  .hero{
+    padding:calc(96px + 4vh) clamp(20px,6vw,64px) 64px;
+    max-width:calc(var(--maxw) + 128px); margin:0 auto;
+  }
+  .plate{
+    position:relative;
+    background:linear-gradient(155deg, var(--bg-elevated), #0d1319 60%);
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:clamp(32px,5vw,56px);
+    overflow:hidden;
+  }
+  .plate::before{
+    content:'';
+    position:absolute; inset:0;
+    background-image:repeating-linear-gradient(135deg, rgba(255,255,255,0.015) 0px, rgba(255,255,255,0.015) 1px, transparent 1px, transparent 6px);
+    pointer-events:none;
+  }
+  .plate-rivet{
+    position:absolute; width:6px; height:6px; border-radius:50%;
+    background:radial-gradient(circle at 35% 35%, #4a5560, #1a222a);
+  }
+  .plate-rivet.tl{ top:14px; left:14px; }
+  .plate-rivet.tr{ top:14px; right:14px; }
+  .plate-rivet.bl{ bottom:14px; left:14px; }
+  .plate-rivet.br{ bottom:14px; right:14px; }
+
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px; letter-spacing:0.14em; text-transform:uppercase;
+    color:var(--copper-bright);
+    display:flex; align-items:center; gap:8px;
+    margin-bottom:18px;
+  }
+  .eyebrow .zigzag{ color:var(--text-faint); }
+
+  .hero h1{
+    font-size:clamp(40px,7vw,72px);
+    font-weight:700; letter-spacing:-0.02em; line-height:1;
+    color:var(--text);
+  }
+  .hero .role{
+    margin-top:12px;
+    font-family:'Space Grotesk', sans-serif;
+    font-size:clamp(15px,2vw,19px);
+    color:var(--text-dim);
+    letter-spacing:0.01em;
+  }
+  .hero .role strong{ color:var(--copper-bright); font-weight:600; }
+
+  .rating-row{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(150px,1fr));
+    gap:1px;
+    margin-top:36px;
+    background:var(--line);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    overflow:hidden;
+  }
+  .rating-cell{
+    background:var(--bg-card);
+    padding:14px 16px;
+  }
+  .rating-cell .k{
+    font-family:'IBM Plex Mono', monospace; font-size:10px;
+    letter-spacing:0.1em; text-transform:uppercase; color:var(--text-faint);
+    margin-bottom:6px;
+  }
+  .rating-cell .v{
+    font-family:'IBM Plex Mono', monospace; font-size:13px;
+    color:var(--text);
+  }
+  .rating-cell .v a{ text-decoration:none; color:var(--text); border-bottom:1px dotted var(--text-faint); }
+  .rating-cell .v a:hover{ color:var(--copper-bright); border-color:var(--copper-bright); }
+
+  .hero-actions{
+    display:flex; flex-wrap:wrap; gap:12px; margin-top:32px;
+  }
+  .btn{
+    font-family:'IBM Plex Mono', monospace; font-size:12px; letter-spacing:0.06em;
+    text-transform:uppercase; text-decoration:none;
+    padding:12px 20px; border-radius:var(--radius);
+    display:inline-flex; align-items:center; gap:8px;
+    transition:all .2s ease;
+    border:1px solid var(--line);
+  }
+  .btn-primary{ background:var(--copper); color:#0a0e13; border-color:var(--copper); font-weight:600; }
+  .btn-primary:hover{ background:var(--copper-bright); transform:translateY(-1px); }
+  .btn-ghost{ color:var(--text-dim); }
+  .btn-ghost:hover{ color:var(--text); border-color:var(--text-faint); }
+
+  /* ---------- circuit rail ---------- */
+  .rail-wrap{
+    position:relative;
+    max-width:var(--maxw); margin:0 auto;
+    padding:0 clamp(20px,6vw,64px);
+  }
+  .rail{
+    position:absolute;
+    left:calc(clamp(20px,6vw,64px) + 3px);
+    top:0; bottom:0; width:2px;
+    background:var(--line);
+    display:none;
+  }
+  .rail-fill{
+    position:absolute; left:0; top:0; width:100%; height:0%;
+    background:linear-gradient(var(--copper), var(--signal));
+    box-shadow:0 0 10px var(--copper-bright);
+    transition:height .08s linear;
+  }
+  @media (min-width:720px){ .rail{ display:block; } }
+
+  section{
+    position:relative;
+    padding:56px 0;
+    border-top:1px solid var(--line-soft);
+  }
+  section:first-of-type{ border-top:none; }
+
+  .section-head{
+    display:flex; align-items:center; gap:16px;
+    margin-bottom:28px;
+    padding-left:0;
+  }
+  @media (min-width:720px){ .section-head{ padding-left:40px; } }
+
+
+  .section-title{
+    font-size:clamp(22px,3vw,28px);
+    font-weight:600; letter-spacing:-0.01em;
+  }
+  .section-tag{
+    font-family:'IBM Plex Mono', monospace; font-size:11px;
+    color:var(--text-faint); letter-spacing:0.08em;
+  }
+
+  .section-body{ }
+  @media (min-width:720px){ .section-body{ padding-left:40px; } }
+
+  /* ---------- profile ---------- */
+  .lede{
+    font-size:clamp(16px,2vw,19px);
+    color:var(--text-dim);
+    max-width:64ch;
+  }
+  .lede strong{ color:var(--text); font-weight:600; }
+
+  /* ---------- experience: circuit directory ---------- */
+  .directory{
+    border:1px solid var(--line);
+    border-radius:6px;
+    overflow:hidden;
+    background:var(--bg-card);
+  }
+  .directory-head{
+    display:grid;
+    grid-template-columns:64px 1fr auto;
+    gap:12px;
+    padding:10px 18px;
+    background:var(--bg-elevated);
+    border-bottom:1px solid var(--line);
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10px; letter-spacing:0.1em; text-transform:uppercase;
+    color:var(--text-faint);
+  }
+  .role-block{
+    padding:22px 18px;
+    border-bottom:1px solid var(--line-soft);
+  }
+  .role-block:last-child{ border-bottom:none; }
+  .role-row{
+    display:grid;
+    grid-template-columns:64px 1fr auto;
+    gap:12px;
+    align-items:baseline;
+  }
+  .cct-tag{
+    font-family:'IBM Plex Mono', monospace; font-size:13px;
+    color:var(--copper-bright); font-weight:600;
+  }
+  .role-name{
+    font-family:'Space Grotesk', sans-serif;
+    font-size:17px; font-weight:600; color:var(--text);
+  }
+  .role-employer{
+    font-family:'Inter',sans-serif; font-size:14px; color:var(--text-dim);
+    margin-top:2px;
+  }
+  .role-dates{
+    font-family:'IBM Plex Mono', monospace; font-size:11px;
+    color:var(--text-faint); white-space:nowrap; text-align:right;
+  }
+  .role-bullets{
+    list-style:none; margin:16px 0 0; padding:0 0 0 76px;
+    display:flex; flex-direction:column; gap:9px;
+  }
+  .role-bullets li{
+    position:relative; padding-left:18px;
+    font-size:14.5px; color:var(--text-dim);
+  }
+  .role-bullets li::before{
+    content:''; position:absolute; left:0; top:7px;
+    width:8px; height:1px; background:var(--copper);
+  }
+  .role-bullets li::after{
+    content:''; position:absolute; left:0; top:4px;
+    width:2px; height:7px; background:var(--copper);
+  }
+  @media (max-width:560px){
+    .role-row{ grid-template-columns:40px 1fr; }
+    .role-dates{ grid-column:1 / -1; text-align:left; padding-left:56px; margin-top:2px;}
+    .role-bullets{ padding-left:56px; }
+  }
+
+  /* ---------- qualities ---------- */
+  .switch-list{
+    list-style:none; margin:0; padding:0;
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+    gap:10px 24px;
+  }
+  .switch-list li{
+    display:flex; align-items:center; gap:12px;
+    font-size:14.5px; color:var(--text-dim);
+    padding:6px 0;
+  }
+  .switch-list svg{ flex:none; }
+
+  /* ---------- cards: licenses / education ---------- */
+  .card-grid{
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:14px;
+  }
+  .card{
+    border:1px dashed var(--line);
+    border-radius:6px;
+    padding:18px 20px;
+    background:var(--bg-card);
+    transition:border-color .2s ease, transform .2s ease, background .2s ease;
+  }
+  .card:hover{ border-color:var(--copper); transform:translateY(-2px); background:var(--bg-elevated); }
+  .card-top{ display:flex; align-items:center; justify-content:flex-end; margin-bottom:10px; }
+  .card-icon{ color:var(--copper-bright); }
+  .card-stamp{
+    font-family:'IBM Plex Mono', monospace; font-size:9px; letter-spacing:0.08em;
+    color:var(--signal); border:1px solid var(--signal); border-radius:20px;
+    padding:2px 8px; text-transform:uppercase;
+  }
+  .card h3{ font-size:15.5px; font-weight:600; color:var(--text); }
+  .card p{ margin:6px 0 0; font-size:13px; color:var(--text-faint); font-family:'IBM Plex Mono', monospace; }
+
+  /* ---------- hobbies ---------- */
+  .hobby-row{
+    display:flex; flex-wrap:wrap; gap:12px;
+  }
+  .hobby-chip{
+    display:flex; align-items:center; gap:9px;
+    border:1px solid var(--line); border-radius:30px;
+    padding:9px 16px 9px 12px;
+    font-size:13.5px; color:var(--text-dim);
+    transition:border-color .2s ease, color .2s ease;
+  }
+  .hobby-chip:hover{ border-color:var(--copper); color:var(--text); }
+
+  /* ---------- footer ---------- */
+  footer{
+    border-top:1px solid var(--line);
+    margin-top:40px;
+    padding:48px clamp(20px,6vw,64px) 40px;
+  }
+  .footer-inner{
+    max-width:var(--maxw); margin:0 auto;
+    display:flex; flex-wrap:wrap; justify-content:space-between; gap:24px;
+  }
+  .footer-plate h2{ font-size:clamp(24px,4vw,34px); }
+  .footer-plate p{ color:var(--text-dim); margin-top:8px; max-width:40ch; font-size:14.5px;}
+  .footer-links{ display:flex; flex-direction:column; gap:10px; }
+  .footer-links a{
+    font-family:'IBM Plex Mono', monospace; font-size:13px;
+    text-decoration:none; color:var(--text-dim);
+    display:flex; align-items:center; gap:8px;
+    transition:color .2s ease;
+  }
+  .footer-links a:hover{ color:var(--copper-bright); }
+  .footer-bottom{
+    max-width:var(--maxw); margin:32px auto 0;
+    padding-top:20px; border-top:1px solid var(--line-soft);
+    display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;
+    font-family:'IBM Plex Mono', monospace; font-size:10.5px; color:var(--text-faint);
+  }
+
+  /* back to top */
+  .to-top{
+    position:fixed; right:20px; bottom:20px; z-index:50;
+    width:42px; height:42px; border-radius:50%;
+    background:var(--bg-card); border:1px solid var(--line);
+    color:var(--text-dim); display:flex; align-items:center; justify-content:center;
+    text-decoration:none; opacity:0; pointer-events:none;
+    transition:opacity .3s ease, border-color .2s ease, color .2s ease, transform .2s ease;
+  }
+  .to-top.show{ opacity:1; pointer-events:auto; }
+  .to-top:hover{ border-color:var(--copper); color:var(--copper-bright); transform:translateY(-2px); }
+
+  @media print{
+    .nav,.to-top,.grid-bg,.rail{ display:none !important; }
+    body{ background:#fff; color:#000; }
+  }
+</style>
 </head>
 <body>
-  <main class="container">
-    <header class="header">
-      <h1>Aidan J Connolly</h1>
-      <p class="subtitle">Electrician — HVAC & Switchboard</p>
-      <div class="contact-info">
-        <span>Enmore NSW</span>
-        <span>•</span>
-        <span><a href="mailto:Aidanjconnolly3@gmail.com">Aidanjconnolly3@gmail.com</a></span>
-        <span>•</span>
-        <span><a href="tel:+61434996723">434 996 723</a></span>
+
+<div class="grid-bg" aria-hidden="true"></div>
+
+<nav class="nav">
+  <a href="#top" class="nav-mark">A. CONNOLLY</a>
+  <ul class="nav-links">
+    <li><a href="#profile" data-nav>Profile</a></li>
+    <li><a href="#experience" data-nav>Experience</a></li>
+    <li><a href="#qualities" data-nav>Qualities</a></li>
+    <li><a href="#credentials" data-nav>Credentials</a></li>
+    <li><a href="#contact" data-nav>Contact</a></li>
+  </ul>
+  <a class="nav-cta" href="mailto:AidanJConnolly3@gmail.com">Get in touch</a>
+</nav>
+
+<main id="top">
+
+  <div class="hero">
+    <div class="plate">
+      <span class="plate-rivet tl"></span><span class="plate-rivet tr"></span>
+      <span class="plate-rivet bl"></span><span class="plate-rivet br"></span>
+      <div class="eyebrow"><span class="zigzag">⌁</span> RATING PLATE — CV.001</div>
+      <h1>Aidan Connolly</h1>
+      <p class="role">Licensed <strong>Electrician</strong> — Commercial, industrial &amp; switchboard manufacturing</p>
+
+      <div class="rating-row">
+        <div class="rating-cell">
+          <div class="k">Location</div>
+          <div class="v">Enmore, NSW</div>
+        </div>
+        <div class="rating-cell">
+          <div class="k">License</div>
+          <div class="v">Electrical Contractors Lic.</div>
+        </div>
+        <div class="rating-cell">
+          <div class="k">Certification</div>
+          <div class="v">Cert III Electrotechnology</div>
+        </div>
+        <div class="rating-cell">
+          <div class="k">Contact</div>
+          <div class="v"><a href="tel:0434996723">0434 996 723</a></div>
+        </div>
       </div>
-    </header>
 
-    <section id="summary" class="section">
-      <h2>Summary</h2>
-      <p>22-year-old electrician with experience in HVAC electrical-mechanical installation and switchboard manufacturing. Passionate about dynamic systems and pursuing a mechatronics degree to combine electrical and mechanical control systems.</p>
-    </section>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="mailto:AidanJConnolly3@gmail.com">Email Aidan</a>
+        <a class="btn btn-ghost" href="tel:0434996723">Call 0434 996 723</a>
+        <a class="btn btn-ghost" href="https://aidanjconnollycv.xyz" target="_blank" rel="noopener">aidanjconnollycv.xyz ↗</a>
+      </div>
+    </div>
+  </div>
 
-    <section id="skills" class="section">
-      <h2>Skills</h2>
-      <div class="skills-grid">
-        <div class="skill-item">HVAC systems</div>
-        <div class="skill-item">Switchboard manufacturing</div>
-        <div class="skill-item">MDBs up to 30kA</div>
-        <div class="skill-item">Copper busbar terminations</div>
-        <div class="skill-item">BMS boards</div>
-        <div class="skill-item">Commissioning & safety</div>
+  <div class="rail-wrap">
+    <div class="rail"><div class="rail-fill" id="railFill"></div></div>
+
+    <section id="profile" data-section>
+      <div class="section-head">
+        <div>
+          <div class="section-tag mono">// SUMMARY</div>
+          <h2 class="section-title">Profile</h2>
+        </div>
+      </div>
+      <div class="section-body">
+        <p class="lede">Strategic electrician with hands-on experience across <strong>commercial</strong>, <strong>industrial</strong>, and <strong>switchboard manufacturing</strong> work. Looking to put technical expertise, problem-solving and leadership to work on complex projects that push the trade forward.</p>
       </div>
     </section>
 
-    <section id="experience" class="section">
-      <h2>Experience</h2>
-      
-      <article class="job">
-        <h3>TES Terrys Electrical Mechanical</h3>
-        <p class="job-meta">Electrician — 2023 &ndash; Present</p>
-        <ul>
-          <li>HVAC electrical-mechanical installation for commercial and residential projects</li>
-          <li>Switchboard manufacturing for HVAC power and control</li>
-          <li>Design and wiring of MDBs up to 30kA (copper busbar)</li>
-          <li>Assembly and configuration of BMS (Building Management System) boards</li>
-        </ul>
-      </article>
+    <section id="experience" data-section>
+      <div class="section-head">
+        <div>
+          <div class="section-tag mono">// CIRCUIT DIRECTORY</div>
+          <h2 class="section-title">Experience</h2>
+        </div>
+      </div>
+      <div class="section-body">
+        <div class="directory">
+          <div class="directory-head">
+            <span>CCT</span><span>DESCRIPTION</span><span>ACTIVE</span>
+          </div>
 
-      <article class="job">
-        <h3>Electromaster</h3>
-        <p class="job-meta">Apprentice Electrician — 2021 &ndash; 2022 (company liquidated 2022)</p>
-        <ul>
-          <li>Practical installation, fault-finding and workshop assembly</li>
-        </ul>
-      </article>
-    </section>
+          <div class="role-block">
+            <div class="role-row">
+              <span class="cct-tag">Q1</span>
+              <div>
+                <div class="role-name">Electrical Apprentice</div>
+                <div class="role-employer">Electromaster</div>
+              </div>
+              <span class="role-dates">SEP 2021 — DEC 2022</span>
+            </div>
+            <ul class="role-bullets">
+              <li>Learnt the fundamentals of electrical installations — wiring, circuitry and safety protocols.</li>
+              <li>Became proficient with power tools, hand tools and wiring systems including cable tray, conduit and cable management.</li>
+              <li>Built a strong sense of the ideal aesthetics of a clean electrical installation.</li>
+            </ul>
+          </div>
 
-    <section id="goals" class="section">
-      <h2>Career Goals</h2>
-      <p>Pursuing a mechatronics degree to work on dynamic systems, robotics and controls, combining electrical experience with mechanical design.</p>
-    </section>
+          <div class="role-block">
+            <div class="role-row">
+              <span class="cct-tag">Q2</span>
+              <div>
+                <div class="role-name">Electrical Apprentice</div>
+                <div class="role-employer">TES — Terry's Electrical Services</div>
+              </div>
+              <span class="role-dates">JAN 2023 — NOV 2025</span>
+            </div>
+            <ul class="role-bullets">
+              <li>Gained experience in commercial and industrial work, including switchboard installations, motor/VSD wiring, and lighting and power systems.</li>
+              <li>Developed strong problem-solving skills through fault finding and troubleshooting electrical issues on-site.</li>
+              <li>Worked alongside senior electricians and other trades to deliver projects to a high standard, while building a strong grasp of AS/NZS 3000 (Wiring Rules) and other relevant standards.</li>
+              <li>Moved into the company's switchboard manufacturing workshop, gaining hands-on experience assembling and testing HVAC, MSB/MDB and BMS switchboards.</li>
+            </ul>
+          </div>
 
-    <section id="contact" class="section">
-      <h2>Contact</h2>
-      <div class="contact-actions">
-        <a class="btn" href="mailto:Aidanjconnolly3@gmail.com">Email me</a>
-        <button class="btn btn-secondary" id="printBtn">Print / PDF</button>
+          <div class="role-block">
+            <div class="role-row">
+              <span class="cct-tag">Q3</span>
+              <div>
+                <div class="role-name">Electrician</div>
+                <div class="role-employer">TES — Terry's Electrical Services</div>
+              </div>
+              <span class="role-dates">NOV 2025 — MAR 2026</span>
+            </div>
+            <ul class="role-bullets">
+              <li>Promoted to electrician after obtaining an Electrical Contractors License, taking on more responsibility and leading projects.</li>
+              <li>Improved methodology to increase efficiency and reduce errors in electrical installations.</li>
+              <li>Mentored junior apprentices, sharing knowledge and best practice to help them build their skills.</li>
+              <li>Continuously updated knowledge of industry standards and regulations to ensure safety and compliance on every project.</li>
+            </ul>
+          </div>
+
+          <div class="role-block">
+            <div class="role-row">
+              <span class="cct-tag">Q4</span>
+              <div>
+                <div class="role-name">Electrician</div>
+                <div class="role-employer">TAL</div>
+              </div>
+              <span class="role-dates">MAY 2026 — PRESENT</span>
+            </div>
+            <ul class="role-bullets">
+              <li>Gained hands-on proficiency in configuring and troubleshooting industrial dynamic control systems.</li>
+              <li>SCADA/HMI data visualization skills.</li>
+              <li>PLC programming &amp; online diagnostics.</li>
+            </ul>
+          </div>
+        </div>
       </div>
     </section>
 
-    <footer class="footer">© Aidan J Connolly — Enmore NSW</footer>
-  </main>
+    <section id="qualities" data-section>
+      <div class="section-head">
+        <div>
+          <div class="section-tag mono">// TRAITS</div>
+          <h2 class="section-title">Qualities</h2>
+        </div>
+      </div>
+      <div class="section-body">
+        <ul class="switch-list" id="qualitiesList"></ul>
+      </div>
+    </section>
 
-  <script src="script.js"></script>
+    <section id="credentials" data-section>
+      <div class="section-head">
+        <div>
+          <div class="section-tag mono">// COMPLIANCE</div>
+          <h2 class="section-title">Licenses &amp; Education</h2>
+        </div>
+      </div>
+      <div class="section-body">
+        <div class="card-grid" id="licenseGrid"></div>
+
+        <div style="height:28px"></div>
+
+        <div class="card-grid">
+          <div class="card">
+            <div class="card-top">
+              <span class="card-stamp">2022 — 2025</span>
+            </div>
+            <h3>Certificate III Electrotechnology</h3>
+            <p>Trade qualification</p>
+          </div>
+          <div class="card">
+            <div class="card-top">
+              <span class="card-stamp">2016 — 2021</span>
+            </div>
+            <h3>HSC</h3>
+            <p>Blackwattle Bay High School</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="hobbies" data-section>
+      <div class="section-head">
+        <div>
+          <div class="section-tag mono">// OFF SITE</div>
+          <h2 class="section-title">Hobbies</h2>
+        </div>
+      </div>
+      <div class="section-body">
+        <div class="hobby-row" id="hobbyRow"></div>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<footer id="contact">
+  <div class="footer-inner">
+    <div class="footer-plate">
+      <div class="section-tag mono">// GET IN TOUCH</div>
+      <h2>Let's wire something up.</h2>
+      <p>Available for commercial, industrial and switchboard work across Sydney.</p>
+    </div>
+    <div class="footer-links">
+      <a href="mailto:AidanJConnolly3@gmail.com">AidanJConnolly3@gmail.com</a>
+      <a href="tel:0434996723">0434 996 723</a>
+      <a href="https://aidanjconnollycv.xyz" target="_blank" rel="noopener">aidanjconnollycv.xyz ↗</a>
+      <a href="#" id="printLink">Print / save as PDF</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>AIDAN CONNOLLY — ELECTRICIAN — ENMORE, NSW</span>
+    <span>REV. 2026</span>
+  </div>
+</footer>
+
+<a href="#top" class="to-top" id="toTop" aria-label="Back to top">↑</a>
+
+<script>
+(function(){
+  // ---- icon library (line icons, schematic-flavoured) ----
+  const icons = {
+    switchOpen: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="5" cy="19" r="1.6" fill="currentColor" stroke="none"/><circle cx="19" cy="19" r="1.6" fill="currentColor" stroke="none"/><line x1="5" y1="19" x2="16" y2="8"/></svg>`,
+    license: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="1.5"/><circle cx="8.5" cy="12" r="2.2"/><line x1="13" y1="9.5" x2="18" y2="9.5"/><line x1="13" y1="12.5" x2="18" y2="12.5"/><line x1="13" y1="15.5" x2="16" y2="15.5"/></svg>`,
+    lift: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v11"/><path d="M7 9l5 5 5-5"/><rect x="4" y="18" width="16" height="3" rx="1"/></svg>`,
+    card: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 4.5-3.2 7.6-8 9-4.8-1.4-8-4.5-8-9V6l8-3z"/><path d="M9 12l2 2 4-4"/></svg>`,
+    wheel: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="18" r="2.2"/><circle cx="17" cy="18" r="2.2"/><path d="M7 18h6l4-9h3"/><path d="M9 9h6"/></svg>`,
+    climb: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="1.6" fill="currentColor" stroke="none"/><circle cx="18" cy="6" r="1.6" fill="currentColor" stroke="none"/><circle cx="12" cy="14" r="1.6" fill="currentColor" stroke="none"/><path d="M4 20l6-7 4 3 6-9"/></svg>`,
+    run: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="14" cy="4.5" r="1.6" fill="currentColor" stroke="none"/><path d="M7 21l3-5 3 1 2-4-3-3 1-4"/><path d="M10 12l4 1 3 4"/></svg>`,
+    circuit: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="6" height="6"/><path d="M12 3v6M12 15v6M3 12h6M15 12h6"/></svg>`,
+    design: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21l4-1 11-11-3-3L4 17l-1 4z"/><path d="M14 6l3 3"/></svg>`,
+    code: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 8l-4 4 4 4"/><path d="M16 8l4 4-4 4"/><path d="M13 5l-2 14"/></svg>`,
+    cpr: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 8.5c0-2.2-1.8-4-4-4-1.4 0-2.6.7-3.3 1.8L12 7.6l-1.2-1.3C10.1 5.2 8.9 4.5 7.5 4.5c-2.2 0-4 1.8-4 4 0 4.5 6 8.7 8.5 10.5 1.1-.8 3-2.2 4.7-4"/><path d="M13 11h3l-2 4h3l-4 5"/></svg>`,
+    firstAid: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="14" rx="2"/><path d="M8 6V5a2 2 0 012-2h4a2 2 0 012 2v1"/><path d="M12 10v6"/><path d="M9 13h6"/></svg>`,
+    lvRescue: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 0116 0"/><path d="M4 12v3a2 2 0 002 2h1v-5H4z"/><path d="M20 12v3a2 2 0 01-2 2h-1v-5h3z"/><path d="M12 4v2"/></svg>`
+  };
+
+  // ---- data (from CV) ----
+  const qualities = [
+    "Complex schematic interpretation",
+    "Process-orientated / efficiency minded",
+    "Innovative and adaptable",
+    "Tenacious",
+    "Systems thinker / reductionist",
+    "Fault finding / root cause analysis",
+    "Receptive and diplomatic",
+    "Lucid communicator",
+    "Practically proficient / manually dexterous"
+  ];
+  const qList = document.getElementById('qualitiesList');
+  qualities.forEach(q=>{
+    const li = document.createElement('li');
+    li.innerHTML = icons.switchOpen + '<span>'+q+'</span>';
+    qList.appendChild(li);
+  });
+
+  const licenses = [
+    {name:"Electrical Contractors License", icon:icons.license},
+    {name:"EWP", icon:icons.lift},
+    {name:"NSW White Card", icon:icons.card},
+    {name:"Driver's License", icon:icons.wheel},
+    {name:"CPR", icon:icons.cpr},
+    {name:"First Aid", icon:icons.firstAid},
+    {name:"LV Rescue", icon:icons.lvRescue}
+  ];
+  const lGrid = document.getElementById('licenseGrid');
+  licenses.forEach(l=>{
+    const div = document.createElement('div');
+    div.className = 'card';
+    div.innerHTML = `<div class="card-top"><span class="card-stamp">Current</span></div><h3>${l.name}</h3><p>License / certification</p>`;
+    lGrid.appendChild(div);
+  });
+
+  const hobbies = [
+    {name:"Rock climbing", icon:icons.climb},
+    {name:"Running", icon:icons.run},
+    {name:"Electronics", icon:icons.circuit},
+    {name:"Design", icon:icons.design},
+    {name:"Coding", icon:icons.code}
+  ];
+  const hRow = document.getElementById('hobbyRow');
+  hobbies.forEach(h=>{
+    const chip = document.createElement('div');
+    chip.className = 'hobby-chip';
+    chip.innerHTML = h.icon + '<span>'+h.name+'</span>';
+    hRow.appendChild(chip);
+  });
+
+  // ---- circuit rail fill on scroll ----
+  const railWrap = document.querySelector('.rail-wrap');
+  const railFill = document.getElementById('railFill');
+  function updateRail(){
+    if(!railWrap || !railFill) return;
+    const rect = railWrap.getBoundingClientRect();
+    const vh = window.innerHeight;
+    const total = rect.height;
+    const seen = Math.min(Math.max(vh*0.5 - rect.top, 0), total);
+    const pct = total > 0 ? (seen/total)*100 : 0;
+    railFill.style.height = pct + '%';
+  }
+  let ticking = false;
+  window.addEventListener('scroll', ()=>{
+    if(!ticking){
+      requestAnimationFrame(()=>{ updateRail(); ticking = false; });
+      ticking = true;
+    }
+  });
+  window.addEventListener('resize', updateRail);
+  updateRail();
+
+  // ---- section lit state + nav active state ----
+  const sections = document.querySelectorAll('section[data-section]');
+  const navLinks = document.querySelectorAll('.nav-links a[data-nav]');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        entry.target.classList.add('lit');
+        const id = entry.target.getAttribute('id');
+        navLinks.forEach(a=>{
+          a.classList.toggle('active', a.getAttribute('href') === '#'+id);
+        });
+      }
+    });
+  }, { threshold: 0.35, rootMargin: '-80px 0px -20% 0px' });
+  sections.forEach(s=>io.observe(s));
+
+  // ---- back to top ----
+  const toTop = document.getElementById('toTop');
+  window.addEventListener('scroll', ()=>{
+    toTop.classList.toggle('show', window.scrollY > 600);
+  });
+
+  // ---- print ----
+  document.getElementById('printLink').addEventListener('click', (e)=>{
+    e.preventDefault();
+    window.print();
+  });
+})();
+</script>
+
 </body>
 </html>
